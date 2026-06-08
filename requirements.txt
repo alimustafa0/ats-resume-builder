@@ -7,7 +7,7 @@ python-decouple>=3.8
 # Background Tasks: database-backed queue + db_worker.
 # Django 6 core ships only the Tasks API + Immediate/Dummy backends,
 # so we add this reference implementation for the real DB backend.
-django-tasks
+django-tasks-db
 
 # Google AI Studio (Gemini) — unified SDK; google-generativeai is deprecated
 google-genai>=1.0
