@@ -1,0 +1,16 @@
+# Web framework — pinned to the current security patch
+Django==6.0.6
+
+# 12-factor configuration / .env handling
+python-decouple>=3.8
+
+# Background Tasks: database-backed queue + db_worker.
+# Django 6 core ships only the Tasks API + Immediate/Dummy backends,
+# so we add this reference implementation for the real DB backend.
+django-tasks
+
+# Google AI Studio (Gemini) — unified SDK; google-generativeai is deprecated
+google-genai>=1.0
+
+# PDF text-stream extraction
+pypdf>=5.0
