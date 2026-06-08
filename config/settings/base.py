@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # Third-party
     "django_tasks_db",
     # Local apps
+    "apps.accounts",
     "apps.core",
     "apps.resumes",
 ]
@@ -107,6 +108,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTH_USER_MODEL = "accounts.User"
 
 
 # Internationalization
