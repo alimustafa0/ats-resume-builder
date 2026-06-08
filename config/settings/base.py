@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django_tasks_db",
     # Local apps
     "apps.core",
+    "apps.resumes",
 ]
 
 MIDDLEWARE = [
