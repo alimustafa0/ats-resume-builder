@@ -55,7 +55,8 @@ _EXTRACTION_PROMPT = """You are an expert resume parser. Extract the candidate's
 
 Rules:
 - Use the wording from the resume; do not paraphrase job titles or skills.
-- If a field is not present, leave it empty -- never invent or infer data.
+- If a field is not present, leave it as an empty string -- never invent, infer, or write placeholders like "Unknown" or "N/A".
+- If text has artificial letter-spacing from PDF styling (e.g. "A L I  M U S T A F A"), collapse it to normal spacing ("Ali Mustafa"). This is the only case where you may alter spacing.
 - Capture every distinct work experience and education entry.
 
 Resume text:
