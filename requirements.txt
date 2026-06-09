@@ -14,3 +14,4 @@ google-genai>=1.0
 
 # PDF text-stream extraction
 pypdf>=5.0
+pydantic
