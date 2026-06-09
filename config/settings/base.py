@@ -91,6 +91,10 @@ TASKS = {
     }
 }
 
+# --- Google Gemini (AI Studio) ---
+GEMINI_API_KEY = config("GEMINI_API_KEY", default="")
+GEMINI_MODEL = config("GEMINI_MODEL", default="gemini-2.5-flash")
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
