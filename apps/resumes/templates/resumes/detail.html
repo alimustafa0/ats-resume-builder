@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ resume.original_filename }} - ATS Resume Builder{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ resume.original_filename|default:"Resume" }}</h1>
+    <p class="lead">Status: <strong>{{ resume.get_status_display }}</strong></p>
+
+    {% if resume.status == "completed" %}
+        <p>Parsing complete &mdash; extracted name:
+           <strong>{{ resume.structured_data.contact.full_name|default:"(none)" }}</strong>,
+           with {{ resume.structured_data.skills|length }} skills found.</p>
+    {% elif resume.status == "failed" %}
+        <p style="color:#b91c1c;">Processing failed: {{ resume.error_message }}</p>
+    {% else %}
+        <p>Queued for parsing. Make sure the worker is running, then refresh this page.</p>
+    {% endif %}
+
+    <p style="margin-top:20px;"><a href="{% url 'resumes:upload' %}">Upload another</a></p>
+</div>
+{% endblock %}

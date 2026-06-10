@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Resume - ATS Resume Builder{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Upload your resume</h1>
+    <p class="lead">A text-based PDF works best. We'll extract the text and structure it with AI.</p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div style="margin-bottom: 18px;">
+            {{ form.original_file }}
+            {{ form.original_file.errors }}
+        </div>
+        <button class="btn" type="submit">Upload and parse</button>
+    </form>
+</div>
+{% endblock %}
