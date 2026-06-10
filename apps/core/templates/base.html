@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}ATS Resume Builder{% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <style>
+        :root {
+            --bg: #f7f7f8; --surface: #fff; --ink: #1a1a1a;
+            --muted: #666; --accent: #2563eb; --border: #e5e7eb;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; background: var(--bg); color: var(--ink); line-height: 1.5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        header { background: var(--surface); border-bottom: 1px solid var(--border); }
+        .container { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+        header .container {
+            display: flex; align-items: center; justify-content: space-between; height: 60px;
+        }
+        .brand { font-weight: 700; font-size: 18px; color: var(--ink); text-decoration: none; }
+        nav a { color: var(--muted); text-decoration: none; margin-left: 18px; font-size: 14px; }
+        nav a:hover { color: var(--accent); }
+        main { padding: 40px 0; }
+        .btn {
+            display: inline-block; background: var(--accent); color: #fff; padding: 10px 18px;
+            border-radius: 8px; text-decoration: none; font-size: 15px; border: none; cursor: pointer;
+        }
+        .btn:hover { opacity: 0.92; }
+        .card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 28px;
+        }
+        h1 { font-size: 26px; margin: 0 0 12px; }
+        p.lead { color: var(--muted); font-size: 16px; margin: 0 0 22px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a class="brand" href="{% url 'core:home' %}">ATS Resume Builder</a>
+            <nav><a href="{% url 'core:home' %}">Home</a></nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</body>
+</html>
