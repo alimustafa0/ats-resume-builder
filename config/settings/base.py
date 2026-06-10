@@ -95,6 +95,9 @@ TASKS = {
 # --- Google Gemini (AI Studio) ---
 GEMINI_API_KEY = config("GEMINI_API_KEY", default="")
 GEMINI_MODEL = config("GEMINI_MODEL", default="gemini-2.5-flash")
+GEMINI_EMBEDDING_MODEL = config(
+    "GEMINI_EMBEDDING_MODEL", default="gemini-embedding-001"
+)
 
 
 # Password validation

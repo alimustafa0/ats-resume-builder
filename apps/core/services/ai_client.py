@@ -57,3 +57,25 @@ def generate_text(
         raise AIClientError("Gemini returned an empty response.")
 
     return text
+
+
+def embed_texts(texts: list[str]) -> list[list[float]]:
+    """Embed a batch of texts for semantic-similarity comparison.
+
+    Returns one vector per input text, in the same order. Raises AIClientError
+    on API failure.
+    """
+    if not texts:
+        return []
+
+    client = _get_client()
+    try:
+        result = client.models.embed_content(
+            model=settings.GEMINI_EMBEDDING_MODEL,
+            contents=texts,
+            config=types.EmbedContentConfig(task_type="SEMANTIC_SIMILARITY"),
+        )
+    except errors.APIError as exc:
+        raise AIClientError(f"Gemini embedding request failed: {exc}") from exc
+
+    return [list(embedding.values) for embedding in result.embeddings]
