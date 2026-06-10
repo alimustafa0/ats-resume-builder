@@ -1,0 +1,18 @@
+<p class="lead" style="margin-bottom:6px;"><strong>Tailored for this job.</strong> Your facts are unchanged &mdash; the wording and emphasis now target the role.</p>
+
+{% with data=match.tailored_data %}
+{% if data.summary %}
+    <h2 class="section">Tailored summary</h2>
+    <p>{{ data.summary }}</p>
+{% endif %}
+{% if data.skills %}
+    <h2 class="section">Skills (reordered for relevance)</h2>
+    <div class="chips">
+        {% for skill in data.skills %}<span class="chip">{{ skill }}</span>{% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+
+<p style="margin-top:22px;">
+    <a class="btn" href="{% url 'matching:download' match.pk %}">Download ATS-ready PDF</a>
+</p>

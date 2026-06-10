@@ -33,6 +33,12 @@ class MatchResult(models.Model):
         help_text="Full required/preferred matched/missing detail from the scorer.",
     )
 
+    tailored_data = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Resume structured data rewritten toward this job.",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
