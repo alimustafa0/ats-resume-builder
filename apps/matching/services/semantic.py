@@ -1,10 +1,12 @@
 """LLM-based semantic skill matching.
 
-The deterministic scorer leaves skills in the gap list when they don't match
-lexically. This layer asks Gemini to judge -- by reasoning, not vector
-distance -- which of those genuinely reflect the candidate's experience (e.g.
-LLaMA/Groq experience covering "LLMs"), then folds the rescues back into the
-score with each match labelled exact or semantic.
+The deterministic scorer matches the resume's skills list against the posting's
+skills, so requirements expressed as experience ("3-5 years"), demonstrated
+abilities, or anything outside the skills array fall into the gap list. This
+layer asks Gemini to judge -- by reasoning over the *whole* resume (summary,
+experience, and skills), not vector distance -- which of those the candidate
+genuinely demonstrates, then folds the rescues back into the score with each
+match labelled exact or semantic.
 """
 
 from __future__ import annotations
@@ -28,39 +30,71 @@ class _Verdicts(BaseModel):
     verdicts: list[_SkillVerdict] = Field(default_factory=list)
 
 
-_JUDGE_PROMPT = """You are a precise technical recruiter judging whether a candidate demonstrates specific skills.
+_JUDGE_PROMPT = """You are a precise technical recruiter judging whether a candidate demonstrates specific requirements, based on their full resume.
 
-The candidate lists these skills:
+Candidate's resume:
 -----
-{resume_skills}
+{resume_profile}
 -----
 
-For each skill below, decide whether the candidate genuinely demonstrates it, based only on the skills above. Apply these principles:
+For each requirement below, decide whether the candidate genuinely demonstrates it, based only on the resume above. Apply these principles:
 - A specific, named technology is evidence for the broader category it clearly belongs to, and for closely synonymous terms.
-- Count a skill as covered only when the evidence is clear; never on a weak, generic, or speculative basis.
+- Demonstrated experience counts: a stated number of years, or responsibilities that clearly exercise an ability (e.g. debugging, problem-solving, building applications), can satisfy a requirement even when it is not listed as a discrete skill.
+- Count a requirement as covered only when the evidence is clear; never on a weak, generic, or speculative basis. If the resume shows no real evidence, it is not covered.
 
-Skills to judge:
+Requirements to judge:
 -----
 {skills_to_judge}
 -----
 
-Return a verdict for every skill in the list: the skill name exactly as given, whether it is covered, and a short reason.
+Return a verdict for every requirement in the list: the requirement text exactly as given, whether it is covered, and a short reason.
 """
 
 
-def judge_missing_skills(
-    resume_skills: list[str], skills_to_judge: list[str]
-) -> dict[str, str]:
+def _resume_profile(resume_data: dict) -> str:
+    """Compact text of the resume used to ground semantic judgments."""
+    parts: list[str] = []
+
+    summary = str(resume_data.get("summary", "")).strip()
+    if summary:
+        parts.append("Summary: " + summary)
+
+    skills = [str(s).strip() for s in resume_data.get("skills", []) if str(s).strip()]
+    if skills:
+        parts.append("Skills: " + ", ".join(skills))
+
+    experience = resume_data.get("experience", []) or []
+    if experience:
+        parts.append("Experience:")
+        for exp in experience:
+            title = str(exp.get("job_title", "")).strip()
+            company = str(exp.get("company", "")).strip()
+            start = str(exp.get("start_date", "")).strip()
+            end = str(exp.get("end_date", "")).strip()
+            header = " - ".join(b for b in (title, company) if b)
+            dates = " to ".join(d for d in (start, end) if d)
+            if header:
+                parts.append(f"- {header}" + (f" ({dates})" if dates else ""))
+            for resp in exp.get("responsibilities", []):
+                text = str(resp).strip()
+                if text:
+                    parts.append(f"    * {text}")
+
+    return "\n".join(parts)
+
+
+def judge_missing_skills(resume_profile: str, skills_to_judge: list[str]) -> dict[str, str]:
     """Ask the LLM which of `skills_to_judge` the resume demonstrates.
 
-    Returns {skill: reason} (keyed by the original skill string) for those
-    judged covered. Raises AIClientError on API or parsing failure.
+    `resume_profile` is the compact resume text from `_resume_profile`. Returns
+    {requirement: reason} (keyed by the original string) for those judged
+    covered. Raises AIClientError on API or parsing failure.
     """
     if not skills_to_judge:
         return {}
 
     prompt = _JUDGE_PROMPT.format(
-        resume_skills=", ".join(resume_skills),
+        resume_profile=resume_profile,
         skills_to_judge="\n".join(f"- {s}" for s in skills_to_judge),
     )
     config = types.GenerateContentConfig(
@@ -91,9 +125,7 @@ def _rebuild_category(category: dict, covered: dict[str, str]) -> dict:
     still_missing: list[str] = []
     for skill in category["missing"]:
         if skill in covered:
-            matched.append(
-                {"skill": skill, "via": "semantic", "reason": covered[skill]}
-            )
+            matched.append({"skill": skill, "via": "semantic", "reason": covered[skill]})
         else:
             still_missing.append(skill)
 
@@ -119,8 +151,8 @@ def score_resume_against_job_semantic(resume_data: dict, job_data: dict) -> dict
     missing = list(
         dict.fromkeys(base["required"]["missing"] + base["preferred"]["missing"])
     )
-    resume_skills = [s for s in resume_data.get("skills", []) if isinstance(s, str)]
-    covered = judge_missing_skills(resume_skills, missing)
+    profile = _resume_profile(resume_data)
+    covered = judge_missing_skills(profile, missing)
 
     required = _rebuild_category(base["required"], covered)
     preferred = _rebuild_category(base["preferred"], covered)
