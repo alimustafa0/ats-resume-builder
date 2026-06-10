@@ -24,3 +24,9 @@ def resume_detail(request, pk):
     """Show a resume's processing status and, once ready, its parsed summary."""
     resume = get_object_or_404(Resume, pk=pk)
     return render(request, "resumes/detail.html", {"resume": resume})
+
+
+def resume_status(request, pk):
+    """Return just the status fragment -- the endpoint HTMX polls."""
+    resume = get_object_or_404(Resume, pk=pk)
+    return render(request, "resumes/_status.html", {"resume": resume})

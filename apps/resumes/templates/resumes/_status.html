@@ -1,0 +1,61 @@
+<div id="resume-status"
+     {% if resume.status == "pending" or resume.status == "processing" %}
+     hx-get="{% url 'resumes:status' resume.pk %}"
+     hx-trigger="every 2s"
+     hx-swap="outerHTML"
+     {% endif %}>
+
+    <p class="lead">Status: <strong>{{ resume.get_status_display }}</strong></p>
+
+    {% if resume.status == "completed" %}
+        {% with data=resume.structured_data %}
+        <p class="contact-line">
+            {{ data.contact.email }}{% if data.contact.phone %} &middot; {{ data.contact.phone }}{% endif %}{% if data.contact.location %} &middot; {{ data.contact.location }}{% endif %}
+        </p>
+
+        {% if data.summary %}
+            <h2 class="section">Summary</h2>
+            <p>{{ data.summary }}</p>
+        {% endif %}
+
+        {% if data.skills %}
+            <h2 class="section">Skills</h2>
+            <div class="chips">
+                {% for skill in data.skills %}<span class="chip">{{ skill }}</span>{% endfor %}
+            </div>
+        {% endif %}
+
+        {% if data.experience %}
+            <h2 class="section">Experience</h2>
+            {% for exp in data.experience %}
+            <div class="entry">
+                <div class="role">{{ exp.job_title }}{% if exp.company %} &mdash; {{ exp.company }}{% endif %}</div>
+                <div class="meta">{{ exp.start_date }}{% if exp.end_date %} &ndash; {{ exp.end_date }}{% endif %}{% if exp.location %} &middot; {{ exp.location }}{% endif %}</div>
+                {% if exp.responsibilities %}
+                <ul>{% for r in exp.responsibilities %}<li>{{ r }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if data.education %}
+            <h2 class="section">Education</h2>
+            {% for edu in data.education %}
+            <div class="entry">
+                <div class="role">{{ edu.degree }}{% if edu.institution %} &mdash; {{ edu.institution }}{% endif %}</div>
+                <div class="meta">{{ edu.start_date }}{% if edu.end_date %} &ndash; {{ edu.end_date }}{% endif %}{% if edu.details %} &middot; {{ edu.details }}{% endif %}</div>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <p style="margin-top:22px;"><a href="{% url 'resumes:upload' %}">Upload another</a></p>
+        {% endwith %}
+
+    {% elif resume.status == "failed" %}
+        <p style="color:#b91c1c;">Processing failed: {{ resume.error_message }}</p>
+        <p style="margin-top:18px;"><a href="{% url 'resumes:upload' %}">Try another</a></p>
+
+    {% else %}
+        <p>Parsing your resume&hellip; this page updates on its own.</p>
+    {% endif %}
+</div>
