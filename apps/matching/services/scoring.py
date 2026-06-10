@@ -87,17 +87,25 @@ def score_resume_against_job(resume_data: dict, job_data: dict) -> dict:
     req_cov = required["coverage"]
     pref_cov = preferred["coverage"]
 
-    if req_cov is not None and pref_cov is not None:
-        blended = _REQUIRED_WEIGHT * req_cov + _PREFERRED_WEIGHT * pref_cov
-    elif req_cov is not None:
-        blended = req_cov
-    elif pref_cov is not None:
-        blended = pref_cov
-    else:
-        blended = 0.0
+    blended = blended_score(req_cov, pref_cov)
 
     return {
         "score": round(blended * 100, 1),
         "required": required,
         "preferred": preferred,
     }
+
+def blended_score(
+    required_coverage: float | None, preferred_coverage: float | None
+) -> float:
+    """Blend required/preferred coverage into a 0-1 score, weighting required."""
+    if required_coverage is not None and preferred_coverage is not None:
+        return (
+            _REQUIRED_WEIGHT * required_coverage
+            + _PREFERRED_WEIGHT * preferred_coverage
+        )
+    if required_coverage is not None:
+        return required_coverage
+    if preferred_coverage is not None:
+        return preferred_coverage
+    return 0.0
