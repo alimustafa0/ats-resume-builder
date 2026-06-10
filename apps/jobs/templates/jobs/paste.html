@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Add Job Posting - ATS Resume Builder{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Add a job posting</h1>
+    <p class="lead">Paste a job description. We'll extract its required and preferred skills with AI, ready to score your resume against.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div style="margin-bottom:14px;">
+            <label>{{ form.title.label }}</label>{{ form.title }}{{ form.title.errors }}
+        </div>
+        <div style="margin-bottom:14px;">
+            <label>{{ form.company.label }}</label>{{ form.company }}{{ form.company.errors }}
+        </div>
+        <div style="margin-bottom:18px;">
+            <label>{{ form.raw_text.label }}</label>{{ form.raw_text }}{{ form.raw_text.errors }}
+        </div>
+        <button class="btn" type="submit">Parse posting</button>
+    </form>
+</div>
+{% endblock %}

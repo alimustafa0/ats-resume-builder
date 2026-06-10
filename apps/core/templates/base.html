@@ -46,13 +46,27 @@
         .entry ul { margin: 6px 0 0; padding-left: 18px; }
         .entry li { font-size: 14px; margin-bottom: 3px; }
         .contact-line { color: var(--muted); font-size: 14px; }
+
+        label { display:block; font-size:13px; font-weight:600; margin-bottom:5px; }
+        input[type=text], input[type=url], input[type=email], textarea, select {
+            width:100%; padding:9px 11px; border:1px solid var(--border); border-radius:8px;
+            font-size:14px; font-family:inherit; background:#fff; color:var(--ink);
+        }
+        textarea { resize:vertical; }
+        .chip-soft { background:#f3f4f6; color:#374151; }
+        ul.list { margin:6px 0 0; padding-left:18px; }
+        ul.list li { font-size:14px; margin-bottom:3px; }
     </style>
 </head>
 <body>
     <header>
         <div class="container">
             <a class="brand" href="{% url 'core:home' %}">ATS Resume Builder</a>
-            <nav><a href="{% url 'core:home' %}">Home</a></nav>
+            <nav>
+                <a href="{% url 'core:home' %}">Home</a>
+                <a href="{% url 'resumes:upload' %}">Resume</a>
+                <a href="{% url 'jobs:new' %}">Job posting</a>
+            </nav>
         </div>
     </header>
     <main>

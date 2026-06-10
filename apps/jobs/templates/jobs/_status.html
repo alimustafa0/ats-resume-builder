@@ -1,0 +1,48 @@
+<div id="job-status"
+     {% if job.status == "pending" or job.status == "processing" %}
+     hx-get="{% url 'jobs:status' job.pk %}"
+     hx-trigger="every 2s"
+     hx-swap="outerHTML"
+     {% endif %}>
+
+    <p class="lead">Status: <strong>{{ job.get_status_display }}</strong></p>
+
+    {% if job.status == "completed" %}
+        {% with data=job.structured_data %}
+        {% if data.seniority %}<p class="contact-line">Seniority: {{ data.seniority }}</p>{% endif %}
+
+        {% if data.required_skills %}
+            <h2 class="section">Required skills</h2>
+            <div class="chips">
+                {% for skill in data.required_skills %}<span class="chip">{{ skill }}</span>{% endfor %}
+            </div>
+        {% endif %}
+
+        {% if data.preferred_skills %}
+            <h2 class="section">Preferred skills</h2>
+            <div class="chips">
+                {% for skill in data.preferred_skills %}<span class="chip chip-soft">{{ skill }}</span>{% endfor %}
+            </div>
+        {% endif %}
+
+        {% if data.responsibilities %}
+            <h2 class="section">Responsibilities</h2>
+            <ul class="list">{% for r in data.responsibilities %}<li>{{ r }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        {% if data.keywords %}
+            <h2 class="section">Keywords</h2>
+            <p class="contact-line">{{ data.keywords|join:", " }}</p>
+        {% endif %}
+
+        <p style="margin-top:22px;"><a href="{% url 'jobs:new' %}">Add another</a></p>
+        {% endwith %}
+
+    {% elif job.status == "failed" %}
+        <p style="color:#b91c1c;">Processing failed: {{ job.error_message }}</p>
+        <p style="margin-top:18px;"><a href="{% url 'jobs:new' %}">Try another</a></p>
+
+    {% else %}
+        <p>Extracting requirements&hellip; this page updates on its own.</p>
+    {% endif %}
+</div>

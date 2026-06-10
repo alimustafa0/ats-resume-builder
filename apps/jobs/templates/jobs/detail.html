@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title|default:"Job Posting" }} - ATS Resume Builder{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ job.title|default:"Job Posting" }}{% if job.company %} <span style="color:var(--muted);font-weight:400;">at {{ job.company }}</span>{% endif %}</h1>
+    {% include "jobs/_status.html" %}
+</div>
+{% endblock %}
