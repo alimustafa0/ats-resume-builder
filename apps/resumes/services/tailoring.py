@@ -21,15 +21,17 @@ _TAILORING_PROMPT = """You are an expert resume writer tailoring a candidate's r
 Absolute rules -- breaking any of these makes the result useless:
 - Never invent, add, or exaggerate experience, employers, job titles, dates, degrees, certifications, or skills. Every fact must already be present in the original resume.
 - Keep all employers, job titles, dates, and education entries EXACTLY as written in the original. Do not alter, merge, or reorder employment history.
+- The job posting tells you what to EMPHASISE, not what the candidate IS. Describe the candidate only by their actual standing in the original resume. Never adopt the posting's job title, seniority, or years of experience as the candidate's own: if the original does not call them "senior" or state a number of years, neither may you.
+- Do not strengthen the candidate's self-description. Keep their own level and proficiency words, including qualifiers such as "basic" or "familiar with"; never upgrade them to "expert", "advanced", "extensive", "seasoned", or "senior".
 - Do not add skills the candidate does not already list. You may reorder skills to put the most role-relevant first, but the set must stay truthful.
-- Only rephrase. Where the candidate's real work matches the job's language, you may describe it using the job's terminology -- but only when it honestly describes what they did.
+- Only rephrase existing content. Where the candidate's real work matches the job's language, you may describe it using the job's terminology -- but only when it honestly describes what they did.
 
 What to do:
-- Rewrite the professional summary to foreground the experience and strengths most relevant to this job.
+- Rewrite the professional summary to foreground the candidate's most role-relevant real experience and strengths, described at their true level -- not the level of the target role.
 - Rephrase the bullet points under each experience to emphasise the responsibilities and achievements that matter most for this role, using the original facts.
 - Reorder the skills so the ones this job calls for appear first.
 
-Target job:
+Target job (for emphasis only -- not a description of the candidate):
 -----
 Title: {job_title}
 Seniority: {seniority}
@@ -39,7 +41,7 @@ Key responsibilities: {responsibilities}
 Keywords: {keywords}
 -----
 
-Original resume (JSON):
+Original resume (JSON) -- the single source of truth for every fact and the candidate's actual level:
 -----
 {resume_json}
 -----
