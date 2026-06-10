@@ -1,0 +1,9 @@
+<div style="margin-top:26px;">
+    <div class="score-num">{{ match.score|floatformat:0 }}<span style="font-size:18px;color:var(--muted);font-weight:400;"> / 100</span></div>
+    <div class="score-bar"><div class="score-fill" style="width:{{ match.score|floatformat:0 }}%;"></div></div>
+
+    {% with b=match.breakdown %}
+        {% include "matching/_category.html" with title="Required" cat=b.required %}
+        {% include "matching/_category.html" with title="Preferred" cat=b.preferred %}
+    {% endwith %}
+</div>

@@ -8,6 +8,7 @@ urlpatterns = [
     path("", include("apps.core.urls")),
     path("", include("apps.resumes.urls")),
     path("", include("apps.jobs.urls")),
+    path("", include("apps.matching.urls")),
 ]
 
 if settings.DEBUG:

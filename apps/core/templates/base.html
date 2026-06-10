@@ -56,6 +56,19 @@
         .chip-soft { background:#f3f4f6; color:#374151; }
         ul.list { margin:6px 0 0; padding-left:18px; }
         ul.list li { font-size:14px; margin-bottom:3px; }
+
+        .htmx-indicator { opacity:0; transition:opacity 150ms; color:var(--muted); margin-left:10px; font-size:14px; }
+        .htmx-request .htmx-indicator { opacity:1; }
+        .htmx-request.htmx-indicator { opacity:1; }
+        .score-num { font-size:48px; font-weight:700; line-height:1; margin-top:6px; }
+        .score-bar { height:8px; background:var(--border); border-radius:4px; margin-top:10px; overflow:hidden; }
+        .score-fill { height:100%; background:var(--accent); border-radius:4px; }
+        .match-row { display:flex; align-items:center; gap:8px; padding:5px 0; font-size:14px; }
+        .match-row .dot { width:18px; height:18px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; color:#fff; flex:none; }
+        .match-row.matched .dot { background:#16a34a; }
+        .match-row.missing .dot { background:#9ca3af; }
+        .match-row.missing { color:var(--muted); }
+        .badge { background:#eef2ff; color:#3730a3; border-radius:5px; padding:1px 7px; font-size:11px; cursor:help; }
     </style>
 </head>
 <body>
@@ -66,6 +79,7 @@
                 <a href="{% url 'core:home' %}">Home</a>
                 <a href="{% url 'resumes:upload' %}">Resume</a>
                 <a href="{% url 'jobs:new' %}">Job posting</a>
+                <a href="{% url 'matching:match' %}">Match</a>
             </nav>
         </div>
     </header>

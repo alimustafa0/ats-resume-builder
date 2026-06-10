@@ -1,0 +1,16 @@
+<h2 class="section">{{ title }} &mdash; {{ cat.matched|length }} / {{ cat.total }} matched</h2>
+<div>
+    {% for m in cat.matched %}
+        <div class="match-row matched">
+            <span class="dot">&check;</span>
+            <span>{{ m.skill }}</span>
+            {% if m.via == "semantic" %}<span class="badge" title="{{ m.reason }}">semantic</span>{% endif %}
+        </div>
+    {% endfor %}
+    {% for skill in cat.missing %}
+        <div class="match-row missing">
+            <span class="dot">&times;</span>
+            <span>{{ skill }}</span>
+        </div>
+    {% endfor %}
+</div>
