@@ -69,6 +69,9 @@
         .match-row.missing .dot { background:#9ca3af; }
         .match-row.missing { color:var(--muted); }
         .badge { background:#eef2ff; color:#3730a3; border-radius:5px; padding:1px 7px; font-size:11px; cursor:help; }
+
+        .navbtn { background:none; border:none; color:var(--muted); cursor:pointer; font-size:14px; margin-left:18px; padding:0; font-family:inherit; }
+        .navbtn:hover { color:var(--accent); }
     </style>
 </head>
 <body>
@@ -80,6 +83,14 @@
                 <a href="{% url 'resumes:upload' %}">Resume</a>
                 <a href="{% url 'jobs:new' %}">Job posting</a>
                 <a href="{% url 'matching:match' %}">Match</a>
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="navbtn">Log out</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">Log in</a>
+                {% endif %}
             </nav>
         </div>
     </header>
