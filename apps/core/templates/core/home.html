@@ -1,9 +1,88 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <h1>Tailor your resume to any job, for free.</h1>
-    <p class="lead">Upload your resume, paste a job description, and get an ATS score plus a tailored, ATS-ready PDF -- grounded only in what you've actually done.</p>
-    <a class="btn" href="{% url 'resumes:upload' %}">Get started</a>
-</div>
+{% if user.is_authenticated %}
+    <div class="dash-head">
+        <h1>Your workspace</h1>
+        <p class="lead" style="margin:0;">Everything you've uploaded, scored, and tailored.</p>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat"><div class="stat-num">{{ resume_count }}</div><div class="stat-label">Résumés</div></div>
+        <div class="stat"><div class="stat-num">{{ job_count }}</div><div class="stat-label">Postings</div></div>
+        <div class="stat"><div class="stat-num">{{ match_count }}</div><div class="stat-label">Matches</div></div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+        <div class="row-head">
+            <h2 class="section" style="margin:0;">Your résumés</h2>
+            <a href="{% url 'resumes:upload' %}" class="link-action">+ New</a>
+        </div>
+        {% for r in resumes %}
+            <a class="list-row" href="{% url 'resumes:detail' r.pk %}">
+                <span class="list-title">{{ r.original_filename|default:"Résumé" }}</span>
+                <span class="status-pill status-{{ r.status }}">{{ r.get_status_display }}</span>
+            </a>
+        {% empty %}
+            <p class="empty">No résumés yet. <a href="{% url 'resumes:upload' %}">Upload one</a>.</p>
+        {% endfor %}
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+        <div class="row-head">
+            <h2 class="section" style="margin:0;">Your postings</h2>
+            <a href="{% url 'jobs:new' %}" class="link-action">+ New</a>
+        </div>
+        {% for j in jobs %}
+            <a class="list-row" href="{% url 'jobs:detail' j.pk %}">
+                <span class="list-title">{{ j.title|default:"Job posting" }}{% if j.company %} &middot; {{ j.company }}{% endif %}</span>
+                <span class="status-pill status-{{ j.status }}">{{ j.get_status_display }}</span>
+            </a>
+        {% empty %}
+            <p class="empty">No postings yet. <a href="{% url 'jobs:new' %}">Add one</a>.</p>
+        {% endfor %}
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+        <div class="row-head">
+            <h2 class="section" style="margin:0;">Recent matches</h2>
+            <a href="{% url 'matching:match' %}" class="link-action">+ New</a>
+        </div>
+        {% for m in matches %}
+            <div class="list-row">
+                <span class="list-title">{{ m.resume.original_filename|default:"Résumé" }} &rarr; {{ m.job_description.title|default:"posting" }}</span>
+                <span class="score-pill">{{ m.score|floatformat:0 }}</span>
+            </div>
+        {% empty %}
+            <p class="empty">No matches yet. <a href="{% url 'matching:match' %}">Score one</a>.</p>
+        {% endfor %}
+    </div>
+{% else %}
+    <section class="hero">
+        <h1 class="hero-title">Tailor your résumé to any job, for free.</h1>
+        <p class="hero-sub">Upload your résumé, paste a job description, and get an ATS match score plus a tailored, ATS-ready PDF &mdash; grounded only in what you've actually done.</p>
+        <div class="hero-cta">
+            <a class="btn" href="{% url 'accounts:signup' %}">Get started</a>
+            <a class="btn-ghost" href="{% url 'accounts:login' %}">Log in</a>
+        </div>
+    </section>
+
+    <div class="steps">
+        <div class="step">
+            <div class="step-num">1</div>
+            <h3>Upload &amp; parse</h3>
+            <p>Your PDF résumé is read and structured by AI &mdash; contact, experience, and skills, all extracted cleanly.</p>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <h3>Score the match</h3>
+            <p>Paste a posting and get an honest ATS score with a clear breakdown of what matches and what's missing.</p>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <h3>Tailor &amp; download</h3>
+            <p>Re-aim your résumé for the role &mdash; rephrasing real experience, never inventing &mdash; then download an ATS-ready PDF.</p>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}
