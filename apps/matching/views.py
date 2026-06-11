@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
@@ -11,21 +12,31 @@ from apps.resumes.services.rendering import render_resume_pdf
 from apps.resumes.services.tailoring import tailor_resume
 
 
+@login_required
 def match_page(request):
-    """Show the match form with completed resumes and postings."""
-    resumes = Resume.objects.filter(status=Resume.Status.COMPLETED)
-    jobs = JobDescription.objects.filter(status=JobDescription.Status.COMPLETED)
+    """Show the match form with the user's completed resumes and postings."""
+    resumes = Resume.objects.filter(user=request.user, status=Resume.Status.COMPLETED)
+    jobs = JobDescription.objects.filter(
+        user=request.user, status=JobDescription.Status.COMPLETED
+    )
     return render(request, "matching/match.html", {"resumes": resumes, "jobs": jobs})
 
 
+@login_required
 @require_POST
 def run_match(request):
     """Score the chosen resume against the chosen posting (HTMX endpoint)."""
     resume = get_object_or_404(
-        Resume, pk=request.POST.get("resume"), status=Resume.Status.COMPLETED
+        Resume,
+        pk=request.POST.get("resume"),
+        user=request.user,
+        status=Resume.Status.COMPLETED,
     )
     job = get_object_or_404(
-        JobDescription, pk=request.POST.get("job"), status=JobDescription.Status.COMPLETED
+        JobDescription,
+        pk=request.POST.get("job"),
+        user=request.user,
+        status=JobDescription.Status.COMPLETED,
     )
     try:
         match = score_and_save(resume, job)
@@ -34,10 +45,11 @@ def run_match(request):
     return render(request, "matching/_result.html", {"match": match})
 
 
+@login_required
 @require_POST
 def tailor_match(request, pk):
     """Tailor the match's resume toward its job, store it, return a preview."""
-    match = get_object_or_404(MatchResult, pk=pk)
+    match = get_object_or_404(MatchResult, pk=pk, user=request.user)
     try:
         tailored = tailor_resume(
             match.resume.structured_data, match.job_description.structured_data
@@ -49,9 +61,10 @@ def tailor_match(request, pk):
     return render(request, "matching/_tailored.html", {"match": match})
 
 
+@login_required
 def download_tailored(request, pk):
     """Render the stored tailored resume as an ATS-ready PDF download."""
-    match = get_object_or_404(MatchResult, pk=pk)
+    match = get_object_or_404(MatchResult, pk=pk, user=request.user)
     if not match.tailored_data:
         return redirect("matching:match")
     pdf_bytes = render_resume_pdf(match.tailored_data)
