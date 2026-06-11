@@ -21,6 +21,7 @@ _TAILORING_PROMPT = """You are an expert resume writer tailoring a candidate's r
 Absolute rules -- breaking any of these makes the result useless:
 - Never invent, add, or exaggerate experience, employers, job titles, dates, degrees, certifications, or skills. Every fact must already be present in the original resume.
 - Keep all employers, job titles, dates, and education entries EXACTLY as written in the original. Do not alter, merge, or reorder employment history.
+- Preserve every specific number, metric, and quantified achievement exactly as written -- percentages, scale (team sizes, dataset or asset sizes), durations, money. When you rephrase a bullet, these must survive verbatim; never drop, round, or generalise them.
 - The job posting tells you what to EMPHASISE, not what the candidate IS. Describe the candidate only by their actual standing in the original resume. Never adopt the posting's job title, seniority, or years of experience as the candidate's own: if the original does not call them "senior" or state a number of years, neither may you.
 - Do not strengthen the candidate's self-description. Keep their own level and proficiency words, including qualifiers such as "basic" or "familiar with"; never upgrade them to "expert", "advanced", "extensive", "seasoned", or "senior".
 - Do not add skills the candidate does not already list. You may reorder skills to put the most role-relevant first, but the set must stay truthful.
