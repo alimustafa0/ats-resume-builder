@@ -12,8 +12,6 @@ class MatchResult(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="match_results",
-        null=True,
-        blank=True,
     )
     resume = models.ForeignKey(
         "resumes.Resume",

@@ -28,8 +28,6 @@ class Resume(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="resumes",
-        null=True,
-        blank=True,
     )
 
     original_file = models.FileField(

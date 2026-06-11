@@ -27,8 +27,6 @@ class JobDescription(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="job_descriptions",
-        null=True,
-        blank=True,
     )
 
     title = models.CharField(max_length=255, blank=True)
