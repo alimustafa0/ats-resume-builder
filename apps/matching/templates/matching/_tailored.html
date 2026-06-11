@@ -14,5 +14,5 @@
 {% endwith %}
 
 <p style="margin-top:22px;">
-    <a class="btn" href="{% url 'matching:download' match.pk %}">Download ATS-ready PDF</a>
+    <a class="btn" href="{% url 'matching:download' match.pk %}" hx-boost="false" download>Download ATS-ready PDF</a>
 </p>
