@@ -20,7 +20,8 @@ def upload_resume(request):
             return redirect("resumes:detail", pk=resume.pk)
     else:
         form = ResumeUploadForm()
-    return render(request, "resumes/upload.html", {"form": form})
+    resumes = Resume.objects.filter(user=request.user)
+    return render(request, "resumes/upload.html", {"form": form, "resumes": resumes})
 
 
 @login_required

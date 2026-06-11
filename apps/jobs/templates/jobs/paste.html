@@ -5,7 +5,7 @@
 {% block content %}
 <div class="card">
     <h1>Add a job posting</h1>
-    <p class="lead">Paste a job description. We'll extract its required and preferred skills with AI, ready to score your resume against.</p>
+    <p class="lead">Paste a job description. We'll extract its required and preferred skills with AI, ready to score your résumé against.</p>
     <form method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
@@ -21,4 +21,16 @@
         <button class="btn" type="submit">Parse posting</button>
     </form>
 </div>
+
+{% if jobs %}
+<div class="card" style="margin-top:20px;">
+    <h2 class="section" style="margin-top:0;">Your postings</h2>
+    {% for j in jobs %}
+        <a class="list-row" href="{% url 'jobs:detail' j.pk %}">
+            <span class="list-title">{{ j.title|default:"Job posting" }}{% if j.company %} &middot; {{ j.company }}{% endif %}</span>
+            <span class="status-pill status-{{ j.status }}">{{ j.get_status_display }}</span>
+        </a>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}

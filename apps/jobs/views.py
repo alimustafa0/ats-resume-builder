@@ -19,7 +19,8 @@ def paste_job(request):
             return redirect("jobs:detail", pk=job.pk)
     else:
         form = JobDescriptionForm()
-    return render(request, "jobs/paste.html", {"form": form})
+    jobs = JobDescription.objects.filter(user=request.user)
+    return render(request, "jobs/paste.html", {"form": form, "jobs": jobs})
 
 
 @login_required
