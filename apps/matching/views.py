@@ -42,7 +42,14 @@ def run_match(request):
         match = score_and_save(resume, job)
     except AIClientError as exc:
         return render(request, "matching/_error.html", {"error": str(exc)})
-    return render(request, "matching/_result.html", {"match": match})
+
+    circumference = 339.292  # 2 * pi * r, with r = 54
+    ring_offset = circumference * (1 - match.score / 100)
+    return render(
+        request,
+        "matching/_result.html",
+        {"match": match, "ring_offset": ring_offset},
+    )
 
 
 @login_required

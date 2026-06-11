@@ -4,34 +4,40 @@
 
 {% block content %}
 <div class="card">
-    <h1>Score a resume against a posting</h1>
+    <h1>Score a résumé against a posting</h1>
     {% if not resumes or not jobs %}
-        <p class="lead">You'll need at least one parsed resume and one parsed posting first.</p>
-        <p>
-            {% if not resumes %}<a href="{% url 'resumes:upload' %}">Upload a resume</a>{% endif %}
-            {% if not resumes and not jobs %} &middot; {% endif %}
-            {% if not jobs %}<a href="{% url 'jobs:new' %}">Add a posting</a>{% endif %}
-        </p>
+        <div class="empty-state">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            <p class="lead">You'll need at least one parsed résumé and one parsed posting to score a match.</p>
+            <div class="hero-cta">
+                {% if not resumes %}<a class="btn" href="{% url 'resumes:upload' %}">Upload a résumé</a>{% endif %}
+                {% if not jobs %}<a class="btn-ghost" href="{% url 'jobs:new' %}">Add a posting</a>{% endif %}
+            </div>
+        </div>
     {% else %}
-        <p class="lead">Pick a resume and a posting; we'll compute the ATS match with a gap breakdown.</p>
+        <p class="lead">Pick a résumé and a posting; we'll compute the ATS match with a gap breakdown.</p>
         <form hx-post="{% url 'matching:run' %}" hx-target="#match-result" hx-swap="innerHTML" hx-indicator="#scoring-indicator">
             {% csrf_token %}
-            <div style="margin-bottom:14px;">
-                <label>Resume</label>
-                <select name="resume" required>
-                    <option value="">Select a resume...</option>
-                    {% for r in resumes %}<option value="{{ r.pk }}">{{ r }}</option>{% endfor %}
-                </select>
+            <div class="pick-grid">
+                <div>
+                    <label>Résumé</label>
+                    <select name="resume" required>
+                        <option value="">Select a résumé...</option>
+                        {% for r in resumes %}<option value="{{ r.pk }}">{{ r }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label>Job posting</label>
+                    <select name="job" required>
+                        <option value="">Select a posting...</option>
+                        {% for j in jobs %}<option value="{{ j.pk }}">{{ j }}</option>{% endfor %}
+                    </select>
+                </div>
             </div>
-            <div style="margin-bottom:18px;">
-                <label>Job posting</label>
-                <select name="job" required>
-                    <option value="">Select a posting...</option>
-                    {% for j in jobs %}<option value="{{ j.pk }}">{{ j }}</option>{% endfor %}
-                </select>
+            <div style="margin-top:18px;">
+                <button class="btn" type="submit">Score match</button>
+                <span id="scoring-indicator" class="htmx-indicator">Scoring&hellip;</span>
             </div>
-            <button class="btn" type="submit">Score match</button>
-            <span id="scoring-indicator" class="htmx-indicator">Scoring&hellip;</span>
         </form>
     {% endif %}
     <div id="match-result"></div>

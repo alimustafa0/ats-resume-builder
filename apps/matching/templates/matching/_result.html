@@ -1,14 +1,28 @@
-<div style="margin-top:26px;">
-    <div class="score-num">{{ match.score|floatformat:0 }}<span style="font-size:18px;color:var(--muted);font-weight:400;"> / 100</span></div>
-    <div class="score-bar"><div class="score-fill" style="width:{{ match.score|floatformat:0 }}%;"></div></div>
+<div class="result" style="margin-top:28px;">
+    <div class="score-ring">
+        <svg viewBox="0 0 120 120" width="148" height="148">
+            <defs>
+                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#007aff"/>
+                    <stop offset="100%" stop-color="#34c759"/>
+                </linearGradient>
+            </defs>
+            <circle class="ring-track" cx="60" cy="60" r="54"/>
+            <circle class="ring-fill" cx="60" cy="60" r="54" style="--ring-offset: {{ ring_offset|floatformat:2 }};"/>
+        </svg>
+        <div class="ring-label">
+            <div class="ring-num">{{ match.score|floatformat:0 }}</div>
+            <div class="ring-sub">/ 100</div>
+        </div>
+    </div>
 
     {% with b=match.breakdown %}
         {% include "matching/_category.html" with title="Required" cat=b.required %}
         {% include "matching/_category.html" with title="Preferred" cat=b.preferred %}
     {% endwith %}
 
-    <div id="tailor-zone" style="margin-top:26px;border-top:1px solid var(--border);padding-top:20px;">
-        <p class="lead" style="margin-bottom:14px;">Tailor your resume to emphasise what this role wants &mdash; rephrasing your real experience, never inventing.</p>
+    <div id="tailor-zone" style="margin-top:26px;border-top:1px solid var(--separator);padding-top:20px;">
+        <p class="lead" style="margin-bottom:14px;">Tailor your résumé to emphasise what this role wants &mdash; rephrasing your real experience, never inventing.</p>
         <form hx-post="{% url 'matching:tailor' match.pk %}" hx-target="#tailor-zone" hx-swap="innerHTML" hx-indicator="#tailor-indicator">
             {% csrf_token %}
             <button class="btn" type="submit">Tailor for this job</button>
