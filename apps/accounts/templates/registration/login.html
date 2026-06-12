@@ -3,19 +3,28 @@
 {% block title %}Log in - ATS Resume Builder{% endblock %}
 
 {% block content %}
-<div class="card" style="max-width:420px;margin:0 auto;">
-    <h1>Log in</h1>
-    {% if form.errors %}<p style="color:#b91c1c;">Email or password is incorrect.</p>{% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <div style="margin-bottom:14px;">
-            <label>{{ form.username.label }}</label>{{ form.username }}
-        </div>
-        <div style="margin-bottom:18px;">
-            <label>{{ form.password.label }}</label>{{ form.password }}
-        </div>
-        <button class="btn" type="submit">Log in</button>
-    </form>
-    <p style="margin-top:16px;font-size:14px;">No account? <a href="{% url 'accounts:signup' %}">Sign up</a>.</p>
+<div class="auth">
+    <div class="card auth-card">
+        <h1>Welcome back</h1>
+        <p class="lead">Log in to continue to your dashboard.</p>
+
+        {% if form.non_field_errors %}
+            <div class="form-alert">{{ form.non_field_errors|join:" " }}</div>
+        {% endif %}
+
+        <form method="post" hx-boost="false">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                </div>
+            {% endfor %}
+            <button class="btn btn-block" type="submit">Log in</button>
+        </form>
+
+        <p class="auth-alt">Don't have an account? <a href="{% url 'accounts:signup' %}">Create one</a></p>
+    </div>
 </div>
 {% endblock %}

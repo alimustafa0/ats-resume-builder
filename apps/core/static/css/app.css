@@ -234,3 +234,31 @@ a.list-row:hover { padding-left: 6px; }
 .ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .ring-num { font-size: 46px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
 .ring-sub { font-size: 14px; color: var(--muted); margin-top: 2px; }
+
+/* ===== Auth (login / signup) ===== */
+.auth { display: flex; justify-content: center; padding: 24px 0 8px; }
+.auth-card { width: 100%; max-width: 420px; }
+.auth-card h1 { margin-bottom: 4px; }
+.auth-card .lead { margin-bottom: 22px; }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 7px; }
+.field input { width: 100%; }
+.field-error { color: #d93b30; font-size: 13px; margin-top: 6px; }
+.field-help { color: var(--muted); font-size: 12.5px; margin-top: 6px; line-height: 1.45; }
+.field-help ul { margin: 4px 0 0; padding-left: 18px; }
+
+.btn-block { width: 100%; justify-content: center; margin-top: 4px; }
+
+.form-alert {
+    background: rgba(217, 59, 48, 0.10);
+    color: #c4271d;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.auth-alt { text-align: center; color: var(--muted); font-size: 14px; margin-top: 20px; }
+.auth-alt a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.auth-alt a:hover { text-decoration: underline; }
